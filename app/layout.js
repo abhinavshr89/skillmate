@@ -1,23 +1,21 @@
-
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from '@clerk/themes'
-
+import { dark } from "@clerk/themes";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-})
+});
 
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-
 
 export const metadata = {
   title: "SkillMate AI",
@@ -26,33 +24,28 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider  afterSignOutUrl="/"
+    <ClerkProvider
+      afterSignOutUrl="/"
       appearance={{
         baseTheme: dark,
       }}
-    
     >
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${poppins.variable} antialiased`}
-      >
-         <ThemeProvider
+      <html lang="en" suppressHydrationWarning>
+        <body className={`${inter.variable} ${poppins.variable} antialiased `}>
+          <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
-          > 
-          <Header/>
-          <main className="h-auto">{children}</main>
-          <footer className="flex items-center justify-center h-16 bg-muted text-white">
-            <p className="text-sm">
-              © {new Date().getFullYear()} Your Company. All rights reserved.
-            </p>
-          </footer>
+          >
+            <Header />
+            <Toaster richColors />
+            <main className="min-h-screen">{children}</main>
+
+          
           </ThemeProvider>
-        
-      </body>
-    </html>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

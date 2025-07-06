@@ -52,7 +52,7 @@ const HeroSection = () => {
             </Button>
           </Link>
         </div>
-        <div className="hero-image-wrapper mt-5 md:mt-0">
+        {/* <div className="hero-image-wrapper mt-5 md:mt-0">
           <div ref={imageRef} className="hero-image">
             <Image
               src="/banner.jpg"
@@ -63,7 +63,7 @@ const HeroSection = () => {
               priority
             />
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

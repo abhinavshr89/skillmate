@@ -26,15 +26,17 @@ import {
   PenBox,
   StarsIcon,
 } from "lucide-react";
+import { checkUser } from "@/lib/checkUser";
 
-const Header = () => {
+const Header = async () => {
+  await checkUser();
   return (
     <header className="fixed top-0 w-full border-b bg-background opacity-80  backdrop-blur-md z-50 supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between ">
         <Link href="/">
-<h1 className="font-poppins font-semibold text-[40px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
-  SkillMate AI
-</h1>
+          <h1 className="font-poppins font-semibold custom-gradient text-[30px] ">
+            SkillMate AI
+          </h1>
         </Link>
 
         <div className="flex items-center space-x-4">
@@ -47,7 +49,7 @@ const Header = () => {
             </Link>
 
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <Button>
                   <StarsIcon className="h-4 w-4" />
                   <span className="hidden md:block">Growth Tools</span>
@@ -55,13 +57,13 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link href="/resume" className="flex items-center space-x-2">
                     <FileText className="h-4 w-4" />
                     <span>Build Resume</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link
                     href="/cover-letter"
                     className="flex items-center space-x-2"
@@ -70,7 +72,7 @@ const Header = () => {
                     <span>Cover Letter</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link
                     href="/interview"
                     className="flex items-center space-x-2"
@@ -89,16 +91,14 @@ const Header = () => {
             </SignInButton>
           </SignedOut>
           <SignedIn>
-            <UserButton 
-            appearance={{
+            <UserButton
+              appearance={{
                 elements: {
                   avatarBox: "h-10 w-10",
-                  userButtonPopoverCard:"shadow-xl",
-                  userPreviewMainIdentifier:"font-semibold"
-                  
+                  userButtonPopoverCard: "shadow-xl",
+                  userPreviewMainIdentifier: "font-semibold",
                 },
-            }}
-           
+              }}
             />
           </SignedIn>
         </div>
