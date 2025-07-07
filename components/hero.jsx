@@ -149,9 +149,7 @@ const HeroSection = () => {
           </Card>
         </div>
       </section>
-      <section className="min-h-screen ">
-
-      </section>
+     
     </>
   );
 };
