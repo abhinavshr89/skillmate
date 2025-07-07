@@ -17,9 +17,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { coverLetterSchema } from "@/lib/schema";
 import useFetch from "@/hooks/use-fetch";
 import MDEditor from "@uiw/react-md-editor";
+import { Download } from "lucide-react";
 import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import html2pdf from "html2pdf.js";
 import { saveCoverLetter } from "@/actions/coverletter";
 
 function CoverLetterForm() {
@@ -45,7 +47,7 @@ function CoverLetterForm() {
     setData,
   } = useFetch(generateAICoverLetter);
 
-  // const [isGenerating, setIsGenerating] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   // Store form data for saving
@@ -63,45 +65,45 @@ function CoverLetterForm() {
     }
   };
 
-  // const generatePDF = async () => {
-  //   if (!coverLetter) {
-  //     toast.error("No cover letter to download");
-  //     return;
-  //   }
+  const generatePDF = async () => {
+    if (!coverLetter) {
+      toast.error("No cover letter to download");
+      return;
+    }
 
-  //   setIsGenerating(true);
-  //   try {
-  //     const element = document.getElementById("coverletter-pdf");
+    setIsGenerating(true);
+    try {
+      const element = document.getElementById("coverletter-pdf");
 
-  //     if (!element) {
-  //       console.error("Cover letter element not found");
-  //       return;
-  //     }
+      if (!element) {
+        console.error("Cover letter element not found");
+        return;
+      }
 
-  //     const opt = {
-  //       margin: [10, 10, 10, 10],
-  //       filename: `${formData?.name || "cover-letter"}_${
-  //         formData?.companyName || "application"
-  //       }.pdf`,
-  //       image: { type: "jpeg", quality: 0.98 },
-  //       html2canvas: {
-  //         scale: 2,
-  //         useCORS: true,
-  //         allowTaint: true,
-  //       },
-  //       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-  //       pagebreak: { mode: "avoid-all" },
-  //     };
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `${formData?.name || "cover-letter"}_${
+          formData?.companyName || "application"
+        }.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+        },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: "avoid-all" },
+      };
 
-  //     await html2pdf().set(opt).from(element).save();
-  //     toast.success("PDF downloaded successfully!");
-  //   } catch (error) {
-  //     console.error("PDF generation error:", error);
-  //     toast.error("Failed to generate PDF");
-  //   } finally {
-  //     setIsGenerating(false);
-  //   }
-  // };
+      await html2pdf().set(opt).from(element).save();
+      toast.success("PDF downloaded successfully!");
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      toast.error("Failed to generate PDF");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!coverLetter || !formData) {
@@ -149,7 +151,23 @@ function CoverLetterForm() {
               />
             </div>
             <div className="mt-4 flex justify-end gap-4">
-              {/* Remove Download button */}
+              <Button
+                variant="destructive"
+                onClick={generatePDF}
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating PDF...
+                  </>
+                ) : (
+                  <>
+                    <Download className="mr-2 h-4 w-4" />
+                    Download
+                  </>
+                )}
+              </Button>
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? (
                   <>
@@ -168,7 +186,39 @@ function CoverLetterForm() {
         </Card>
       )}
 
-      {/* Remove the hidden PDF element */}
+      {/* Hidden element for PDF generation */}
+      {coverLetter && (
+        <div
+          style={{
+            position: "absolute",
+            left: "-9999px",
+            top: "-9999px",
+          }}
+        >
+          <div
+            id="coverletter-pdf"
+            style={{
+              width: "210mm",
+              minHeight: "297mm",
+              padding: "20mm",
+              margin: "0",
+              background: "white",
+              color: "black",
+              fontSize: "12pt",
+              lineHeight: "1.4",
+            }}
+          >
+            <MDEditor.Markdown
+              source={coverLetter}
+              style={{
+                background: "white",
+                color: "black",
+                fontFamily: "Arial, sans-serif",
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       <Card>
         <CardHeader>
@@ -195,56 +245,6 @@ function CoverLetterForm() {
 
               <div className="flex w-full justify-between gap-3">
                 <div className="flex-1">
-                  <h3 className="mb-2 text-xl">Company Name</h3>
-                  <Input
-                    placeholder="Enter company name"
-                    {...register("companyName")}
-                  />
-                  {errors.companyName && (
-                    <p className="text-red-500 text-sm">
-                      {errors.companyName.message}
-                    </p>
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h3 className="mb-2 text-xl">Job Title</h3>
-                  <Input
-                    placeholder="Enter job title"
-                    {...register("jobTitle")}
-                  />
-                  {errors.jobTitle && (
-                    <p className="text-red-500 text-sm">
-                      {errors.jobTitle.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* job description */}
-              <div>
-                <h3 className="mb-2 text-xl">Job Description</h3>
-                <Textarea
-                  placeholder="Enter job description"
-                  {...register("jobDescription")}
-                />
-                {errors.jobDescription && (
-                  <p className="text-red-500 text-sm">
-                    {errors.jobDescription.message}
-                  </p>
-                )}
-              </div>
-              <Button type="submit" disabled={loading} className="w-full">
-                {loading ? "Generating..." : "Generate Cover Letter"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-export default CoverLetterForm;
                   <h3 className="mb-2 text-xl">Company Name</h3>
                   <Input
                     placeholder="Enter company name"

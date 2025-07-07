@@ -1,14 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import MDEditor from "@uiw/react-md-editor";
 import useFetch from "@/hooks/use-fetch";
 import { getCoverLetterById } from "@/actions/coverletter";
 import { Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import html2pdf from "html2pdf.js";
 import { toast } from "sonner";
 
-function CoverLetter({ params }) {
+function CoverLetter() {
+  const params = useParams();
   const coverLetterId = params.id;
 
   const {
@@ -34,6 +35,9 @@ function CoverLetter({ params }) {
 
     setIsGenerating(true);
     try {
+      // Dynamic import to avoid SSR issues
+      const html2pdf = (await import("html2pdf.js")).default;
+
       const element = document.getElementById("coverletter-pdf");
 
       if (!element) {
@@ -118,7 +122,6 @@ function CoverLetter({ params }) {
           value={coverLetter?.content || "No cover letter data available"}
           preview="preview"
           hideToolbar
-          visibleDragBar={false}
           height={600}
         />
       </div>
@@ -161,3 +164,4 @@ function CoverLetter({ params }) {
 }
 
 export default CoverLetter;
+
