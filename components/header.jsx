@@ -35,10 +35,14 @@ const Header = async () => {
     <header className="fixed top-0 w-full border-b bg-background opacity-80  backdrop-blur-md z-50 supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between ">
         <Link href="/">
-          <h1 className="max-sm:text-[20px] font-poppins font-semibold custom-gradient text-[30px] ">
+        <div className="flex items-center space-x-2 flex-row-reverse gap-2">
+          <h1 className=" max-sm:hidden font-poppins font-semibold custom-gradient text-[30px] ">
             SkillMate AI
           </h1>
+          <Image alt="header-icon" width={30} height={30} src={"/img.jpg"} className=""/>
          
+        </div>
+
         </Link>
 
         <div className="flex items-center space-x-4">
